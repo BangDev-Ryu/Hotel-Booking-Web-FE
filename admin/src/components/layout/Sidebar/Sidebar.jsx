@@ -26,8 +26,8 @@ const SidebarData = [
             { title: "Phòng", icon: <BedIcon/>, link: "/room" },
             { title: "Loại phòng", icon: <CategoryIcon/>, link: "/room-types" },
             { title: "Khu", icon: <LocationOnIcon/>, link: "/khu" },
-            { title: "Tiện nghi", icon: <WeekendIcon/>, link: "/amenities" },
-            { title: "Nội thất", icon: <WeekendIcon/>, link: "/furniture" }
+            { title: "Tiện nghi", icon: <WeekendIcon/>, link: "/tien-nghi" },
+            { title: "Nội thất", icon: <WeekendIcon/>, link: "/noi-that" }
         ]
     },
     {

@@ -10,46 +10,34 @@ import {
   message
 } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import './Khu.css';
+import './NoiThat.css';
 
-function Khu() {
-  const [khus, setKhus] = useState([]);
+function NoiThat() {
+  const [noiThats, setNoiThats] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingKhu, setEditingKhu] = useState(null);
+  const [editingNoiThat, setEditingNoiThat] = useState(null);
   const [searchText, setSearchText] = useState('');
 
-  // Fetch dữ liệu khi component mount
   useEffect(() => {
-    fetchKhus();
+    fetchNoiThats();
   }, []);
 
-  // Hàm fetch danh sách khu
-  const fetchKhus = async () => {
+  const fetchNoiThats = async () => {
     try {
-      // fetch('http://localhost:8080/khu')
-      // .then(res => res.json())
-      // .then((result) => {
-      //   setKhus(result);
-      // })
-      
-      const response = await fetch('http://localhost:8080/khu');
+      const response = await fetch('http://localhost:8080/noi-that');
       const data = await response.json();
-      setKhus(data);
+      setNoiThats(data);
     } catch (error) {
-        console.log(error)
-      message.error('Không thể tải danh sách khu!');
+      console.log(error);
+      message.error('Không thể tải danh sách nội thất!');
     }
   };
 
-  
-
-  // Xử lý thêm/sửa khu
   const handleSubmit = async (values) => {
     try {
-      if (editingKhu) {
-        // Cập nhật khu
-        const response = await fetch(`http://localhost:8080/khu/${editingKhu.id}`, {
+      if (editingNoiThat) {
+        const response = await fetch(`http://localhost:8080/noi-that/${editingNoiThat.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -57,12 +45,11 @@ function Khu() {
           body: JSON.stringify(values)
         });
         if (response.ok) {
-          message.success('Cập nhật khu thành công!');
-          fetchKhus();
+          message.success('Cập nhật nội thất thành công!');
+          fetchNoiThats();
         }
       } else {
-        // Thêm khu mới
-        const response = await fetch('http://localhost:8080/khu', {
+        const response = await fetch('http://localhost:8080/noi-that', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -70,41 +57,38 @@ function Khu() {
           body: JSON.stringify(values)
         });
         if (response.ok) {
-          message.success('Thêm khu mới thành công!');
-          fetchKhus();
+          message.success('Thêm nội thất mới thành công!');
+          fetchNoiThats();
         }
       }
       setIsModalVisible(false);
       form.resetFields();
-      setEditingKhu(null);
+      setEditingNoiThat(null);
     } catch (error) {
       message.error('Có lỗi xảy ra!');
     }
   };
 
-  // Xử lý sửa khu
-  const handleEdit = (khu) => {
-    setEditingKhu(khu);
-    form.setFieldsValue(khu);
+  const handleEdit = (noiThat) => {
+    setEditingNoiThat(noiThat);
+    form.setFieldsValue(noiThat);
     setIsModalVisible(true);
   };
 
-  // Xử lý xóa khu
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/khu/${id}`, {
+      const response = await fetch(`http://localhost:8080/noi-that/${id}`, {
         method: 'DELETE'
       });
       if (response.ok) {
-        message.success('Xóa khu thành công!');
-        fetchKhus();
+        message.success('Xóa nội thất thành công!');
+        fetchNoiThats();
       }
     } catch (error) {
-      message.error('Không thể xóa khu!');
+      message.error('Không thể xóa nội thất!');
     }
   };
 
-  // Cột cho bảng
   const columns = [
     {
       title: 'ID',
@@ -113,7 +97,7 @@ function Khu() {
       width: '15%',
     },
     {
-      title: 'Tên khu',
+      title: 'Tên nội thất',
       dataIndex: 'name',
       key: 'name',
       width: '60%',
@@ -139,8 +123,8 @@ function Khu() {
             Sửa
           </Button>
           <Popconfirm
-            title="Xóa khu"
-            description="Bạn có chắc chắn muốn xóa khu này không?"
+            title="Xóa nội thất"
+            description="Bạn có chắc chắn muốn xóa nội thất này không?"
             onConfirm={() => handleDelete(record.id)}
             okText="Xóa"
             cancelText="Hủy"
@@ -168,12 +152,12 @@ function Khu() {
   ];
 
   return (
-    <div className="khu-management">
-      <div className="khu-header">
-        <h1>Quản lý khu</h1>
-        <div className="khu-actions">
+    <div className="noithat-management">
+      <div className="noithat-header">
+        <h1>Quản lý nội thất</h1>
+        <div className="noithat-actions">
           <Input
-            placeholder="Tìm kiếm khu..."
+            placeholder="Tìm kiếm nội thất..."
             prefix={<SearchOutlined />}
             onChange={(e) => setSearchText(e.target.value)}
             style={{ width: 300, marginRight: 16 }}
@@ -183,24 +167,24 @@ function Khu() {
             icon={<PlusOutlined />}
             onClick={() => {
               setIsModalVisible(true);
-              setEditingKhu(null);
+              setEditingNoiThat(null);
               form.resetFields();
             }}
           >
-            Thêm khu mới
+            Thêm nội thất mới
           </Button>
         </div>
       </div>
 
-      <Table columns={columns} dataSource={khus} rowKey="id" />
+      <Table columns={columns} dataSource={noiThats} rowKey="id" />
 
       <Modal
-        title={editingKhu ? "Sửa thông tin khu" : "Thêm khu mới"}
+        title={editingNoiThat ? "Sửa thông tin nội thất" : "Thêm nội thất mới"}
         open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
           form.resetFields();
-          setEditingKhu(null);
+          setEditingNoiThat(null);
         }}
         footer={null}
       >
@@ -211,8 +195,8 @@ function Khu() {
         >
           <Form.Item
             name="name"
-            label="Tên khu"
-            rules={[{ required: true, message: 'Vui lòng nhập tên khu!' }]}
+            label="Tên nội thất"
+            rules={[{ required: true, message: 'Vui lòng nhập tên nội thất!' }]}
           >
             <Input />
           </Form.Item>
@@ -220,12 +204,12 @@ function Khu() {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit">
-                {editingKhu ? 'Cập nhật' : 'Thêm mới'}
+                {editingNoiThat ? 'Cập nhật' : 'Thêm mới'}
               </Button>
               <Button onClick={() => {
                 setIsModalVisible(false);
                 form.resetFields();
-                setEditingKhu(null);
+                setEditingNoiThat(null);
               }}>
                 Hủy
               </Button>
@@ -237,4 +221,4 @@ function Khu() {
   );
 }
 
-export default Khu;
+export default NoiThat;

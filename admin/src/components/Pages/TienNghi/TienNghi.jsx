@@ -10,46 +10,34 @@ import {
   message
 } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import './Khu.css';
+import './TienNghi.css';
 
-function Khu() {
-  const [khus, setKhus] = useState([]);
+function TienNghi() {
+  const [tienNghis, setTienNghis] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingKhu, setEditingKhu] = useState(null);
+  const [editingTienNghi, setEditingTienNghi] = useState(null);
   const [searchText, setSearchText] = useState('');
 
-  // Fetch dữ liệu khi component mount
   useEffect(() => {
-    fetchKhus();
+    fetchTienNghis();
   }, []);
 
-  // Hàm fetch danh sách khu
-  const fetchKhus = async () => {
+  const fetchTienNghis = async () => {
     try {
-      // fetch('http://localhost:8080/khu')
-      // .then(res => res.json())
-      // .then((result) => {
-      //   setKhus(result);
-      // })
-      
-      const response = await fetch('http://localhost:8080/khu');
+      const response = await fetch('http://localhost:8080/tien-nghi');
       const data = await response.json();
-      setKhus(data);
+      setTienNghis(data);
     } catch (error) {
-        console.log(error)
-      message.error('Không thể tải danh sách khu!');
+      console.log(error);
+      message.error('Không thể tải danh sách tiện nghi!');
     }
   };
 
-  
-
-  // Xử lý thêm/sửa khu
   const handleSubmit = async (values) => {
     try {
-      if (editingKhu) {
-        // Cập nhật khu
-        const response = await fetch(`http://localhost:8080/khu/${editingKhu.id}`, {
+      if (editingTienNghi) {
+        const response = await fetch(`http://localhost:8080/tien-nghi/${editingTienNghi.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -57,12 +45,11 @@ function Khu() {
           body: JSON.stringify(values)
         });
         if (response.ok) {
-          message.success('Cập nhật khu thành công!');
-          fetchKhus();
+          message.success('Cập nhật tiện nghi thành công!');
+          fetchTienNghis();
         }
       } else {
-        // Thêm khu mới
-        const response = await fetch('http://localhost:8080/khu', {
+        const response = await fetch('http://localhost:8080/tien-nghi', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -70,41 +57,38 @@ function Khu() {
           body: JSON.stringify(values)
         });
         if (response.ok) {
-          message.success('Thêm khu mới thành công!');
-          fetchKhus();
+          message.success('Thêm tiện nghi mới thành công!');
+          fetchTienNghis();
         }
       }
       setIsModalVisible(false);
       form.resetFields();
-      setEditingKhu(null);
+      setEditingTienNghi(null);
     } catch (error) {
       message.error('Có lỗi xảy ra!');
     }
   };
 
-  // Xử lý sửa khu
-  const handleEdit = (khu) => {
-    setEditingKhu(khu);
-    form.setFieldsValue(khu);
+  const handleEdit = (tienNghi) => {
+    setEditingTienNghi(tienNghi);
+    form.setFieldsValue(tienNghi);
     setIsModalVisible(true);
   };
 
-  // Xử lý xóa khu
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:8080/khu/${id}`, {
+      const response = await fetch(`http://localhost:8080/tien-nghi/${id}`, {
         method: 'DELETE'
       });
       if (response.ok) {
-        message.success('Xóa khu thành công!');
-        fetchKhus();
+        message.success('Xóa tiện nghi thành công!');
+        fetchTienNghis();
       }
     } catch (error) {
-      message.error('Không thể xóa khu!');
+      message.error('Không thể xóa tiện nghi!');
     }
   };
 
-  // Cột cho bảng
   const columns = [
     {
       title: 'ID',
@@ -113,7 +97,7 @@ function Khu() {
       width: '15%',
     },
     {
-      title: 'Tên khu',
+      title: 'Tên tiện nghi',
       dataIndex: 'name',
       key: 'name',
       width: '60%',
@@ -139,8 +123,8 @@ function Khu() {
             Sửa
           </Button>
           <Popconfirm
-            title="Xóa khu"
-            description="Bạn có chắc chắn muốn xóa khu này không?"
+            title="Xóa tiện nghi"
+            description="Bạn có chắc chắn muốn xóa tiện nghi này không?"
             onConfirm={() => handleDelete(record.id)}
             okText="Xóa"
             cancelText="Hủy"
@@ -168,12 +152,12 @@ function Khu() {
   ];
 
   return (
-    <div className="khu-management">
-      <div className="khu-header">
-        <h1>Quản lý khu</h1>
-        <div className="khu-actions">
+    <div className="tiennghi-management">
+      <div className="tiennghi-header">
+        <h1>Quản lý tiện nghi</h1>
+        <div className="tiennghi-actions">
           <Input
-            placeholder="Tìm kiếm khu..."
+            placeholder="Tìm kiếm tiện nghi..."
             prefix={<SearchOutlined />}
             onChange={(e) => setSearchText(e.target.value)}
             style={{ width: 300, marginRight: 16 }}
@@ -183,24 +167,24 @@ function Khu() {
             icon={<PlusOutlined />}
             onClick={() => {
               setIsModalVisible(true);
-              setEditingKhu(null);
+              setEditingTienNghi(null);
               form.resetFields();
             }}
           >
-            Thêm khu mới
+            Thêm tiện nghi mới
           </Button>
         </div>
       </div>
 
-      <Table columns={columns} dataSource={khus} rowKey="id" />
+      <Table columns={columns} dataSource={tienNghis} rowKey="id" />
 
       <Modal
-        title={editingKhu ? "Sửa thông tin khu" : "Thêm khu mới"}
+        title={editingTienNghi ? "Sửa thông tin tiện nghi" : "Thêm tiện nghi mới"}
         open={isModalVisible}
         onCancel={() => {
           setIsModalVisible(false);
           form.resetFields();
-          setEditingKhu(null);
+          setEditingTienNghi(null);
         }}
         footer={null}
       >
@@ -211,8 +195,8 @@ function Khu() {
         >
           <Form.Item
             name="name"
-            label="Tên khu"
-            rules={[{ required: true, message: 'Vui lòng nhập tên khu!' }]}
+            label="Tên tiện nghi"
+            rules={[{ required: true, message: 'Vui lòng nhập tên tiện nghi!' }]}
           >
             <Input />
           </Form.Item>
@@ -220,12 +204,12 @@ function Khu() {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit">
-                {editingKhu ? 'Cập nhật' : 'Thêm mới'}
+                {editingTienNghi ? 'Cập nhật' : 'Thêm mới'}
               </Button>
               <Button onClick={() => {
                 setIsModalVisible(false);
                 form.resetFields();
-                setEditingKhu(null);
+                setEditingTienNghi(null);
               }}>
                 Hủy
               </Button>
@@ -237,4 +221,4 @@ function Khu() {
   );
 }
 
-export default Khu;
+export default TienNghi;

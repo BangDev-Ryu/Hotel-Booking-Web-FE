@@ -1,19 +1,19 @@
-.khu-management {
+.noithat-management {
   padding: 24px;
 }
 
-.khu-header {
+.noithat-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
 }
 
-.khu-header h1 {
+.noithat-header h1 {
   margin: 0;
 }
 
-.khu-actions {
+.noithat-actions {
   display: flex;
   align-items: center;
 }

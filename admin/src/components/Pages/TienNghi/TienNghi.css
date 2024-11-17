@@ -1,0 +1,43 @@
+.tiennghi-management {
+  padding: 24px;
+}
+
+.tiennghi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.tiennghi-header h1 {
+  margin: 0;
+}
+
+.tiennghi-actions {
+  display: flex;
+  align-items: center;
+}
+
+.ant-table {
+  background: white;
+  border-radius: 8px;
+}
+
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-table-cell .ant-space {
+  display: flex;
+  justify-content: center;
+}
+
+.ant-table-cell .ant-btn {
+  min-width: 32px;
+  padding: 2.4px 8px;
+}
+
+.ant-btn:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
