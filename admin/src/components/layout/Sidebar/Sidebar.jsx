@@ -16,6 +16,7 @@ import StarIcon from '@mui/icons-material/Star';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 
 const SidebarData = [
@@ -24,7 +25,7 @@ const SidebarData = [
         icon: <BedIcon/>,
         subItems: [
             { title: "Phòng", icon: <BedIcon/>, link: "/room" },
-            { title: "Loại phòng", icon: <CategoryIcon/>, link: "/room-types" },
+            { title: "Loại phòng", icon: <CategoryIcon/>, link: "/loai-phong" },
             { title: "Khu", icon: <LocationOnIcon/>, link: "/khu" },
             { title: "Tiện nghi", icon: <WeekendIcon/>, link: "/tien-nghi" },
             { title: "Nội thất", icon: <WeekendIcon/>, link: "/noi-that" }
@@ -61,6 +62,7 @@ const SidebarData = [
 function Sidebar() {
     const [selectedIndex, setSelectedIndex] = useState(null);
     const [openMenus, setOpenMenus] = useState({});
+    const [selectedSubItem, setSelectedSubItem] = useState(null);
     const navigate = useNavigate();
 
     const handleMainMenuClick = (index) => {
@@ -70,48 +72,66 @@ function Sidebar() {
         }));
     };
 
-    const handleSubItemClick = (link) => {
+    const handleSubItemClick = (link, mainIndex, subIndex) => {
+        setSelectedIndex(mainIndex);
+        setSelectedSubItem(subIndex);
         navigate(link);
+    };
+
+    const handleLogout = () => {
+        console.log("Logout clicked");
     };
 
     return (
         <div className="Sidebar">
-            <div className="logo d-flex align-items-center justify-content-center p-3">
-                <HotelIcon sx={{ fontSize: 40, color: '#1C3F53' }}/>
-                <h2 className="ms-2 mb-0">HOTEL BOOKING</h2>
+            <div className="sidebar-content">
+                <div className="logo d-flex align-items-center justify-content-center p-3">
+                    <HotelIcon sx={{ fontSize: 40, color: '#1C3F53' }}/>
+                    <h2 className="ms-2 mb-0">HOTEL BOOKING</h2>
+                </div>
+
+                <nav className="nav flex-column">
+                    {SidebarData.map((item, index) => (
+                        <div key={index} className="menu-item">
+                            <button
+                                className={`main-menu-btn ${selectedIndex === index ? 'active' : ''}`}
+                                onClick={() => handleMainMenuClick(index)}
+                            >
+                                <div className="d-flex align-items-center justify-content-between w-100">
+                                    <div className="d-flex align-items-center">
+                                        <span className="icon">{item.icon}</span>
+                                        <span className="title">{item.title}</span>
+                                    </div>
+                                    {openMenus[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                </div>
+                            </button>
+                            
+                            <div className={`sub-menu ${openMenus[index] ? 'show' : ''}`}>
+                                {item.subItems.map((subItem, subIndex) => (
+                                    <button
+                                        key={subIndex}
+                                        className={`sub-menu-btn ${selectedIndex === index && selectedSubItem === subIndex ? 'active' : ''}`}
+                                        onClick={() => handleSubItemClick(subItem.link, index, subIndex)}
+                                    >
+                                        <span className="icon">{subItem.icon}</span>
+                                        <span className="title">{subItem.title}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </nav>
             </div>
 
-            <nav className="nav flex-column">
-                {SidebarData.map((item, index) => (
-                    <div key={index} className="menu-item">
-                        <button
-                            className="main-menu-btn"
-                            onClick={() => handleMainMenuClick(index)}
-                        >
-                            <div className="d-flex align-items-center justify-content-between w-100">
-                                <div className="d-flex align-items-center">
-                                    <span className="icon">{item.icon}</span>
-                                    <span className="title">{item.title}</span>
-                                </div>
-                                {openMenus[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                            </div>
-                        </button>
-                        
-                        <div className={`sub-menu ${openMenus[index] ? 'show' : ''}`}>
-                            {item.subItems.map((subItem, subIndex) => (
-                                <button
-                                    key={subIndex}
-                                    className="sub-menu-btn"
-                                    onClick={() => handleSubItemClick(subItem.link)}
-                                >
-                                    <span className="icon">{subItem.icon}</span>
-                                    <span className="title">{subItem.title}</span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </nav>
+            <button
+                className="logout-btn main-menu-btn"
+                onClick={handleLogout}
+            >
+                <div className="d-flex align-items-center">
+                    <span className="icon"><LogoutIcon /></span>
+                    <span className="title">Đăng xuất</span>
+                </div>
+            </button>
         </div>
     );
 }
