@@ -1,0 +1,67 @@
+.Sidebar {
+    width: 280px;
+    height: 100vh;
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+}
+
+.logo {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.logo h2 {
+    color: #1C3F53;
+    font-size: 1.5rem;
+}
+
+.menu-item {
+    width: 100%;
+}
+
+.main-menu-btn {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.main-menu-btn:hover {
+    background-color: #e9ecef;
+}
+
+.icon {
+    margin-right: 10px;
+    color: #1e4d7b;
+}
+
+.sub-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.sub-menu.show {
+    max-height: 500px;
+}
+
+.sub-menu-btn {
+    width: 100%;
+    padding: 10px 20px 10px 40px;
+    border: none;
+    background: none;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.sub-menu-btn:hover {
+    background-color: #e9ecef;
+    color: #1e4d7b;
+}

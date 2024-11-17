@@ -1,0 +1,28 @@
+.khu-management {
+  padding: 24px;
+}
+
+.khu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.khu-header h1 {
+  margin: 0;
+}
+
+.khu-actions {
+  display: flex;
+  align-items: center;
+}
+
+.ant-table {
+  background: white;
+  border-radius: 8px;
+}
+
+.ant-modal-content {
+  border-radius: 8px;
+}
