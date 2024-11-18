@@ -7,6 +7,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import CategoryIcon from '@mui/icons-material/Category';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import RoomServiceIcon from '@mui/icons-material/RoomService';
 import WeekendIcon from '@mui/icons-material/Weekend';
 import SecurityIcon from '@mui/icons-material/Security';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -27,7 +28,7 @@ const SidebarData = [
             { title: "Phòng", icon: <BedIcon/>, link: "/room" },
             { title: "Loại phòng", icon: <CategoryIcon/>, link: "/loai-phong" },
             { title: "Khu", icon: <LocationOnIcon/>, link: "/khu" },
-            { title: "Tiện nghi", icon: <WeekendIcon/>, link: "/tien-nghi" },
+            { title: "Tiện nghi", icon: <RestaurantIcon/>, link: "/tien-nghi" },
             { title: "Nội thất", icon: <WeekendIcon/>, link: "/noi-that" }
         ]
     },
@@ -46,7 +47,7 @@ const SidebarData = [
         subItems: [
             { title: "Đơn đặt phòng", icon: <BookOnlineIcon/>, link: "/bookings" },
             { title: "Hóa đơn", icon: <ReceiptIcon/>, link: "/invoices" },
-            { title: "Dịch vụ", icon: <RestaurantIcon/>, link: "/services" }
+            { title: "Dịch vụ", icon: <RoomServiceIcon/>, link: "/services" }
         ]
     },
     {
