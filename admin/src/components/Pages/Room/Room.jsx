@@ -17,18 +17,23 @@ const { Option } = Select;
 
 function Room() {
   const [rooms, setRooms] = useState([]);
-
+  const [khus, setKhus] = useState([]);
+  const [loaiPhongs, setLoaiPhongs] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [editingRoom, setEditingRoom] = useState(null);
   const [searchText, setSearchText] = useState('');
+  const [selectedKhu, setSelectedKhu] = useState({});
+  const [selectedLoaiPhong, setSelectedLoaiPhong] = useState({});
 
   // Thêm useEffect để fetch dữ liệu khi component mount
   useEffect(() => {
     fetchRooms();
+    fetchKhus();
+    fetchLoaiPhongs();
   }, []);
 
-  // Hàm fetch danh sách phòng
+  // Hàm fetch
   const fetchRooms = async () => {
     try {
       const response = await fetch('http://localhost:8080/room');
@@ -39,47 +44,80 @@ function Room() {
     }
   };
 
+  const fetchKhus = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/khu');
+      const data = await response.json();
+      setKhus(data);
+    } catch (error) {
+      message.error("Không thể tải danh sách khu!")
+    }
+  }
+
+  const fetchLoaiPhongs = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/loai-phong');
+      const data = await response.json();
+      setLoaiPhongs(data);
+    } catch (error) {
+      message.error("Không thể tải danh sách khu!")
+    }
+  }
+
   // Xử lý thêm/sửa phòng
   const handleSubmit = async (values) => {
     try {
-      if (editingRoom) {
-        // Cập nhật phòng
-        const response = await fetch(`http://localhost:8080/room/${editingRoom.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...values,
-            price: new BigDecimal(values.price)
-          })
-        });
-        if (response.ok) {
-          message.success('Cập nhật phòng thành công!');
-          fetchRooms();
+        // Kiểm tra dữ liệu trước khi gửi
+        if (!values.khu || !values.name || !values.dienTich || !values.loaiPhong || !values.status) {
+            message.error('Vui lòng điền đầy đủ thông tin!');
+            return;
         }
-      } else {
-        // Thêm phòng mới
-        const response = await fetch('http://localhost:8080/room', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...values,
-            price: new BigDecimal(values.price)
-          })
-        });
-        if (response.ok) {
-          message.success('Thêm phòng mới thành công!');
-          fetchRooms();
+        if (editingRoom) {
+            // Cập nhật phòng
+            const response = await fetch(`http://localhost:8080/room/${editingRoom.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  ...values,
+                  khu: {id: values.khu},
+                  loaiPhong: {id: values.loaiPhong}
+                })
+            });
+            if (response.ok) {
+                message.success('Cập nhật phòng thành công!');
+                fetchRooms();
+            } else {
+                message.error('Cập nhật phòng thất bại!');
+            }
+        } else {
+            // Thêm phòng mới
+            const response = await fetch('http://localhost:8080/room', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  ...values,
+                  khu: {id: values.khu},
+                  loaiPhong: {id: values.loaiPhong}
+                })
+            });
+            if (response.ok) {
+                message.success('Thêm phòng mới thành công!');
+                console.log(values);
+                fetchRooms();
+            } else {
+                console.log(values)
+                message.error('Thêm phòng mới thất bại!');
+            }
         }
-      }
-      setIsModalVisible(false);
-      form.resetFields();
-      setEditingRoom(null);
+        setIsModalVisible(false);
+        form.resetFields();
+        setEditingRoom(null);
     } catch (error) {
-      message.error('Có lỗi xảy ra!');
+        message.error('Có lỗi xảy ra!');
     }
   };
 
@@ -87,6 +125,8 @@ function Room() {
   const handleEdit = (room) => {
     setEditingRoom(room);
     form.setFieldsValue(room);
+    form.setFieldValue("khu", room.khu.name);
+    form.setFieldValue("loaiPhong", room.loaiPhong.name);
     setIsModalVisible(true);
   };
 
@@ -111,11 +151,13 @@ function Room() {
       title: 'Khu',
       dataIndex: 'khu',
       key: 'khu',
+      render: (khu) => `${khu.name}`
     },
     {
-      title: 'Số phòng',
-      dataIndex: 'soPhong',
-      key: 'soPhong',
+      title: 'Tên phòng',
+      dataIndex: 'name',
+      key: 'name',
+      render: (name) => `${name}`,
       filteredValue: [searchText],
       onFilter: (value, record) => {
         return String(record.soPhong).toLowerCase().includes(value.toLowerCase()) ||
@@ -131,24 +173,14 @@ function Room() {
     },
     {
       title: 'Loại phòng',
-      dataIndex: 'roomType',
-      key: 'roomType',
-    },
-    {
-      title: 'Khuyến mãi',
-      dataIndex: 'khuyenMai',
-      key: 'khuyenMai',
+      dataIndex: 'loaiPhong',
+      key: 'loaiPhong',
+      render: (loaiPhong) => `${loaiPhong.name}`
     },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-    },
-    {
-      title: 'Giá (VNĐ)',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) => price.toLocaleString('vi-VN')
     },
     {
       title: 'Thao tác',
@@ -224,15 +256,22 @@ function Room() {
             label="Khu"
             rules={[{ required: true, message: 'Vui lòng nhập khu!' }]}
           >
-            <Input />
+            <Select
+              placeholder="Chọn khu"
+              onChange={setSelectedKhu}
+              value={selectedKhu}
+              options={khus.map(k => ({ value: k.id, label: k.name }))}
+            >
+
+            </Select>
           </Form.Item>
 
           <Form.Item
-            name="soPhong"
-            label="Số phòng"
+            name="name"
+            label="Tên phòng"
             rules={[{ required: true, message: 'Vui lòng nhập số phòng!' }]}
           >
-            <Input type="number" />
+            <Input type="text" />
           </Form.Item>
 
           <Form.Item
@@ -244,22 +283,18 @@ function Room() {
           </Form.Item>
 
           <Form.Item
-            name="roomType"
+            name="loaiPhong"
             label="Loại phòng"
             rules={[{ required: true, message: 'Vui lòng chọn loại phòng!' }]}
           >
-            <Select>
-              <Option value="Standard">Standard</Option>
-              <Option value="Deluxe">Deluxe</Option>
-              <Option value="Suite">Suite</Option>
+            <Select
+              placeholder="Chọn loại phòng"
+              onChange={setSelectedLoaiPhong}
+              value={selectedLoaiPhong}
+              options={loaiPhongs.map(lp => ({ value: lp.id, label: lp.name }))}
+            >
+    
             </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="khuyenMai"
-            label="Khuyến mãi"
-          >
-            <Input />
           </Form.Item>
 
           <Form.Item
@@ -269,17 +304,10 @@ function Room() {
           >
             <Select>
               <Option value="Trống">Trống</Option>
+              <Option value="Đang sử dụng">Đang sử dụng</Option>
               <Option value="Đã đặt">Đã đặt</Option>
-              <Option value="Đang dọn">Đang dọn</Option>
+              <Option value="Bảo trì">Bảo trì</Option>
             </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="price"
-            label="Giá phòng (VNĐ)"
-            rules={[{ required: true, message: 'Vui lòng nhập giá phòng!' }]}
-          >
-            <Input type="number" />
           </Form.Item>
 
           <Form.Item>
@@ -291,6 +319,8 @@ function Room() {
                 setIsModalVisible(false);
                 form.resetFields();
                 setEditingRoom(null);
+                setSelectedKhu([]);
+                setSelectedLoaiPhong([]);
               }}>
                 Hủy
               </Button>
