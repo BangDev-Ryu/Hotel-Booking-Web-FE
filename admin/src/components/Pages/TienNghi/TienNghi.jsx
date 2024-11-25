@@ -9,7 +9,8 @@ import {
   Popconfirm,
   message
 } from 'antd';
-import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { DataGrid } from '@mui/x-data-grid';
+import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, SortAscendingOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import './TienNghi.css';
 
 function TienNghi() {

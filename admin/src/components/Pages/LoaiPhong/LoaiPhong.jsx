@@ -176,41 +176,6 @@ function LoaiPhong() {
     }
   };
 
-  // Render chi tiết loại phòng
-  const renderLoaiPhongDetails = async (record) => {
-    const noiThatData = await fetchNoiThatByLoaiPhong(record.id);
-    const tienNghiData = await fetchTienNghiByLoaiPhong(record.id);
-
-    return (
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Nội thất" key="1">
-          <Table 
-            size="small"
-            columns={[
-              { title: 'ID', dataIndex: 'id', width: '20%' },
-              { title: 'Tên nội thất', dataIndex: 'name' }
-            ]}
-            dataSource={noiThatData}
-            rowKey="id"
-            pagination={false}
-          />
-        </TabPane>
-        <TabPane tab="Tiện nghi" key="2">
-          <Table 
-            size="small"
-            columns={[
-              { title: 'ID', dataIndex: 'id', width: '20%' },
-              { title: 'Tên tiện nghi', dataIndex: 'name' }
-            ]}
-            dataSource={tienNghiData}
-            rowKey="id"
-            pagination={false}
-          />
-        </TabPane>
-      </Tabs>
-    );
-  };
-
   // Hiển thị chi tiết loại phòng
   const showLoaiPhongDetails = async (record) => {
     try {
