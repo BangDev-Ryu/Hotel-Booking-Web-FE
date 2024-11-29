@@ -40,7 +40,7 @@ const Offer = () => {
           <img 
             className='w-100 h-100'
             style={{ objectFit: 'cover' }} 
-            src="../../../public/images/offers/offer1.jpg" 
+            src="/images/offers/offer1.jpg" 
             alt="offer1" 
           />
           <Carousel.Caption>
@@ -52,7 +52,7 @@ const Offer = () => {
           <img 
             className='w-100 h-100' 
             style={{ objectFit: 'cover' }}
-            src="../../../public/images/offers/offer2.jpg" 
+            src="/images/offers/offer2.jpg" 
             alt="offer2" 
           />
           <Carousel.Caption>
@@ -64,7 +64,7 @@ const Offer = () => {
           <img 
             className='w-100 h-100' 
             style={{ objectFit: 'cover' }}
-            src="../../../public/images/offers/offer3.jpg" 
+            src="/images/offers/offer3.jpg" 
             alt="offer3" 
           />
           <Carousel.Caption>

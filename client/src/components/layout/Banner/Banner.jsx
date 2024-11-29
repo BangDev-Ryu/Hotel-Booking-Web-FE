@@ -8,15 +8,15 @@ const Banner = () => {
             <Carousel>
                 <Carousel.Item>
                     <img className='w-100' 
-                        src="../../../public/images/banners/banner1.jpg" alt="banner1" />
+                        src="/images/banners/banner1.jpg" alt="banner1" />
                 </Carousel.Item>
                 <Carousel.Item>
                     <img className='w-100' 
-                        src="../../../public/images/banners/banner2.jpg" alt="banner2" />
+                        src="/images/banners/banner2.jpg" alt="banner2" />
                 </Carousel.Item>
                 <Carousel.Item>
                     <img className='w-100' 
-                        src="../../../public/images/banners/banner3.jpg" alt="banner3" />
+                        src="/images/banners/banner3.jpg" alt="banner3" />
                 </Carousel.Item>
             </Carousel>
             <div style={{ 

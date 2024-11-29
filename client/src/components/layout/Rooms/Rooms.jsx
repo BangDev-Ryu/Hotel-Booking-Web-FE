@@ -22,7 +22,7 @@ const Rooms = () => {
                             className="card-img"
                             component="img"
                             height="450"
-                            image="../../../public/images/rooms/room1.jpg"
+                            image="/images/rooms/room1.jpg"
                             alt="room1"
                         />
                         <CardContent  sx={{ backgroundColor: 'white', height: '100px' }}>
@@ -42,7 +42,7 @@ const Rooms = () => {
                             className="card-img"
                             component="img"
                             height="450"
-                            image="../../../public/images/rooms/room2.jpg"
+                            image="/images/rooms/room2.jpg"
                             alt="room2"
                         />
                         <CardContent  sx={{ backgroundColor: 'white', height: '100px' }}>
@@ -62,7 +62,7 @@ const Rooms = () => {
                             className="card-img"
                             component="img"
                             height="450"
-                            image="../../../public/images/rooms/room3.jpg"
+                            image="/images/rooms/room3.jpg"
                             alt="room3"
                         />
                         <CardContent  sx={{ backgroundColor: 'white', height: '100px' }}>
