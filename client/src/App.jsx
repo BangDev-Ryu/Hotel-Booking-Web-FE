@@ -1,22 +1,34 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Banner from './components/layout/Banner/Banner'
+import Contact from './components/layout/Contact/Contact'
+import Footer from './components/layout/Footer/Footer'
+import Header from './components/layout/Header/Header'
+import Offer from './components/layout/Offer/Offer'
+import Rooms from './components/layout/Rooms/Rooms'
+import Booking from './components/pages/Booking/Booking'
 import './App.css'
-import Banner from './components/Banner/Banner'
-import Contact from './components/Contact/Contact'
-import Footer from './components/Footer/Footer'
-import Header from './components/Header/Header'
-import Offer from './components/Offer/Offer'
-import Rooms from './components/Rooms/Rooms'
 
 function App() {
 
   return (
-    <>
-      <Header></Header>
-      <Banner></Banner>
-      <Rooms></Rooms>
-      <Offer></Offer>
-      <Contact></Contact>
-      <Footer></Footer>
-    </>
+    <Router>
+      <>
+        <Routes>
+          <Route path='/booking' element={<Booking />} />
+          <Route path='*' element={
+            <>
+              <Header />
+              <Banner />
+              <Rooms />
+              <Offer />
+              <Contact />
+              <Footer />
+            </>
+          } />
+        </Routes>
+      </>
+    </Router>
   )
 }
 

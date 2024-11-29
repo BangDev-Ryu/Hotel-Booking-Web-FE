@@ -1,0 +1,19 @@
+.footer-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.footer-link {
+    margin-top: 16px;
+    color: white;
+}
+
+.footer-link > svg {
+   margin: 8px;
+}
+
+.footer-link > svg:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}

@@ -147,6 +147,7 @@ const Header = () => {
             <Button
               color='#fff'
               sx={{border: '1px solid #fff'}}
+              href='/booking'
             >
               Book now
             </Button>
