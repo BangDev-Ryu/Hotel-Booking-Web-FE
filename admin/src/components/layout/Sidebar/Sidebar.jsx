@@ -1,7 +1,6 @@
 import { useState } from "react";
 import "../../../App.css"
 import "./SideBar.css"
-import HotelIcon from '@mui/icons-material/Hotel';
 import BedIcon from '@mui/icons-material/Bed';
 import PersonIcon from '@mui/icons-material/Person';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
@@ -13,8 +12,6 @@ import SecurityIcon from '@mui/icons-material/Security';
 import SettingsIcon from '@mui/icons-material/Settings';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import StarIcon from '@mui/icons-material/Star';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -36,28 +33,20 @@ const SidebarData = [
         title: "Quản lý tài khoản",
         icon: <PersonIcon/>,
         subItems: [
-            { title: "Tài khoản", icon: <PersonIcon/>, link: "/accounts" },
-            { title: "Quyền", icon: <SecurityIcon/>, link: "/roles" },
-            { title: "Chức năng", icon: <SettingsIcon/>, link: "/functions" }
+            { title: "Tài khoản", icon: <PersonIcon/>, link: "/account" },
+            { title: "Quyền", icon: <SecurityIcon/>, link: "/quyen" },
+            { title: "Chức năng", icon: <SettingsIcon/>, link: "/chuc-nang" }
         ]
     },
     {
         title: "Quản lý đơn đặt phòng",
         icon: <BookOnlineIcon/>,
         subItems: [
-            { title: "Đơn đặt phòng", icon: <BookOnlineIcon/>, link: "/bookings" },
-            { title: "Hóa đơn", icon: <ReceiptIcon/>, link: "/invoices" },
-            { title: "Dịch vụ", icon: <RoomServiceIcon/>, link: "/services" }
+            { title: "Đơn đặt phòng", icon: <BookOnlineIcon/>, link: "/booking" },
+            { title: "Hóa đơn", icon: <ReceiptIcon/>, link: "/hoa-don" },
+            { title: "Dịch vụ", icon: <RoomServiceIcon/>, link: "/dich-vu" }
         ]
     },
-    {
-        title: "Quản lý khách sạn",
-        icon: <HotelIcon/>,
-        subItems: [
-            { title: "Đánh giá", icon: <StarIcon/>, link: "/reviews" },
-            { title: "Khuyến mãi", icon: <LocalOfferIcon/>, link: "/promotions" }
-        ]
-    }
 ];
 
 function Sidebar() {
@@ -87,8 +76,7 @@ function Sidebar() {
         <div className="Sidebar">
             <div className="sidebar-content">
                 <div className="logo d-flex align-items-center justify-content-center p-3">
-                    <HotelIcon sx={{ fontSize: 40, color: '#1C3F53' }}/>
-                    <h2 className="ms-2 mb-0">HOTEL BOOKING</h2>
+                    <h2 className="ms-2 mb-0">HOTEL AIKO</h2>
                 </div>
 
                 <nav className="nav flex-column">

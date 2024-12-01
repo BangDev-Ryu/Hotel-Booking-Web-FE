@@ -80,3 +80,53 @@
 .ant-popover-message-title {
   font-weight: 500;
 }
+
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.image-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-upload-container {
+  padding: 16px;
+}
+
+.image-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.image-card {
+  width: 104px;  /* Kích thước giống với nút upload */
+  position: relative;
+  margin-bottom: 35px;
+}
+
+.image-card .ant-image {
+  width: 104px;
+  height: 104px;
+  display: block;
+}
+
+.image-card .ant-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-button {
+  position: absolute;
+  bottom: -30px;
+  left: 10%;
+  /* transform: translateX(-50%); */
+  width: 80%;
+}

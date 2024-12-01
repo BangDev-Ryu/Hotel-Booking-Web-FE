@@ -9,7 +9,9 @@ import {
   Popconfirm,
   message,
   Select,
-  Tabs
+  Tabs,
+  Image,
+  Upload
 } from 'antd';
 import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import './LoaiPhong.css';
@@ -31,6 +33,9 @@ function LoaiPhong() {
   const [searchText, setSearchText] = useState('');
   const [selectedNoiThats, setSelectedNoiThats] = useState([]);
   const [selectedTienNghis, setSelectedTienNghis] = useState([]);
+  const [images, setImages] = useState([]);
+  const [selectedLoaiPhong, setSelectedLoaiPhong] = useState(null);
+  const [isImageModalVisible, setIsImageModalVisible] = useState(false);
 
   // Fetch dữ liệu khi component mount
   useEffect(() => {
@@ -201,14 +206,87 @@ function LoaiPhong() {
     }
   };
 
+  // Fetch hình ảnh của loại phòng
+  const fetchImages = async (loaiPhongId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/loai-phong/${loaiPhongId}/hinh-anh`);
+      const data = await response.json();
+      setImages(data);
+    } catch (error) {
+      message.error('Không thể tải danh sách hình ảnh!');
+    }
+  };
+
+  // Xử lý upload ảnh
+  const handleUpload = async (file) => {
+    try {
+        // Log file information
+        console.log('File being uploaded:', file);
+        
+        // Chuyển file thành base64
+        const base64Data = await convertFileToBase64(file);
+        console.log('Base64 data generated:', base64Data); 
+        
+        console.log('Sending request to:', `http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh`);
+        
+        const response = await fetch(`http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ base64Data: base64Data })
+        });
+
+        console.log('Response status:', response.status);
+        const responseData = await response.json();
+        console.log('Response data:', responseData);
+
+        if (response.ok) {
+            message.success('Thêm ảnh thành công!');
+            fetchImages(selectedLoaiPhong.id);
+        } else {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    } catch (error) {
+        message.error('Không thể thêm ảnh!');
+        console.error('Upload error:', error);
+    }
+  };
+
+  // Hàm chuyển đổi file thành base64
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        console.log('Starting file conversion to base64');
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            console.log('File successfully converted to base64');
+            resolve(reader.result);
+        };
+        reader.onerror = error => {
+            console.error('Error converting file to base64:', error);
+            reject(error);
+        };
+    });
+  };
+
+  // Xử lý xóa ảnh
+  const handleDeleteImage = async (imageId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh/${imageId}`,
+        { method: 'DELETE' }
+      );
+
+      if (response.ok) {
+        message.success('Xóa ảnh thành công!');
+        fetchImages(selectedLoaiPhong.id);
+      }
+    } catch (error) {
+      message.error('Không thể xóa ảnh!');
+    }
+  };
+
   // Cột cho bảng
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: '10%',
-    },
     {
       title: 'Tên loại phòng',
       dataIndex: 'name',
@@ -229,7 +307,7 @@ function LoaiPhong() {
     {
       title: 'Thao tác',
       key: 'action',
-      width: '40%',
+      width: '50%',
       render: (_, record) => (
         <Space size="small">
           <Button 
@@ -240,6 +318,19 @@ function LoaiPhong() {
           >
             Chi tiết
           </Button>
+
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => {
+              setSelectedLoaiPhong(record);
+              setIsImageModalVisible(true);
+              fetchImages(record.id);
+            }}
+          >
+            Ảnh
+          </Button>
+
           <Button 
             type="primary"
             size="small"
@@ -266,6 +357,7 @@ function LoaiPhong() {
               Xóa
             </Button>
           </Popconfirm>
+          
         </Space>
       ),
     },
@@ -444,6 +536,75 @@ function LoaiPhong() {
             </Space>
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="Quản lý hình ảnh"
+        open={isImageModalVisible}
+        onCancel={() => setIsImageModalVisible(false)}
+        footer={null}
+        width={800}
+      >
+        <div className="image-upload-container">
+          <Image.PreviewGroup>
+            <div className="image-list">
+              <Upload
+                listType="picture-card"
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  // Kiểm tra kích thước file (ví dụ: giới hạn 5MB)
+                  const isLt5M = file.size / 1024 / 1024 < 5;
+                  if (!isLt5M) {
+                    message.error('Kích thước ảnh phải nhỏ hơn 5MB!');
+                    return false;
+                  }
+                  
+                  // Kiểm tra định dạng file
+                  const isImage = file.type.startsWith('image/');
+                  if (!isImage) {
+                    message.error('Chỉ chấp nhận file ảnh!');
+                    return false;
+                  }
+
+                  handleUpload(file);
+                  return false;
+                }}
+              >
+                <div>
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Thêm ảnh</div>
+                </div>
+              </Upload>
+              
+              {images.map((image) => (
+                <div key={image.id} className="image-card">
+                  <Image
+                    src={image.base64Data} 
+                    alt="room"
+                    style={{ objectFit: 'cover' }}
+                  />
+                  <Popconfirm
+                    title="Xóa ảnh"
+                    description="Bạn có chắc chắn muốn xóa ảnh này không?"
+                    onConfirm={() => handleDeleteImage(image.id)}
+                    okText="Xóa"
+                    cancelText="Hủy"
+                    okButtonProps={{ danger: true }}
+                  >
+                    <Button
+                      type="primary"
+                      danger
+                      size="small"
+                      className="delete-button"
+                    >
+                      Xóa
+                    </Button>
+                  </Popconfirm>
+                </div>
+              ))}
+            </div>
+          </Image.PreviewGroup>
+        </div>
       </Modal>
     </div>
   );
