@@ -13,7 +13,7 @@ import {
   Image,
   Upload
 } from 'antd';
-import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
+import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, FileImageOutlined } from '@ant-design/icons';
 import './LoaiPhong.css';
 
 const { TabPane } = Tabs;
@@ -220,34 +220,32 @@ function LoaiPhong() {
   // Xử lý upload ảnh
   const handleUpload = async (file) => {
     try {
-        // Log file information
-        console.log('File being uploaded:', file);
-        
-        // Chuyển file thành base64
-        const base64Data = await convertFileToBase64(file);
-        console.log('Base64 data generated:', base64Data); 
-        
-        console.log('Sending request to:', `http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh`);
-        
-        const response = await fetch(`http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ base64Data: base64Data })
-        });
+      // Kiểm tra selectedLoaiPhong
+      if (!selectedLoaiPhong || !selectedLoaiPhong.id) {
+        message.error('Vui lòng chọn loại phòng trước khi thêm ảnh!');
+        return;
+      }
 
-        console.log('Response status:', response.status);
-        const responseData = await response.json();
-        console.log('Response data:', responseData);
+      // Chuyển file thành base64
+      const base64Data = await convertFileToBase64(file);
+      
+      const response = await fetch(`http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          base64Data: base64Data
+        })
+      });
 
-        if (response.ok) {
-            message.success('Thêm ảnh thành công!');
-            fetchImages(selectedLoaiPhong.id);
-        } else {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      if (response.ok) {
+        message.success('Thêm ảnh thành công!');
+        fetchImages(selectedLoaiPhong.id);
+      } else {
+        throw new Error('Không thể thêm ảnh!');
+      }
     } catch (error) {
-        message.error('Không thể thêm ảnh!');
-        console.error('Upload error:', error);
+      message.error('Không thể thêm ảnh!');
+      console.error('Upload error:', error);
     }
   };
 
@@ -272,16 +270,19 @@ function LoaiPhong() {
   const handleDeleteImage = async (imageId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/loai-phong/${selectedLoaiPhong.id}/hinh-anh/${imageId}`,
+        `http://localhost:8080/hinh-anh/${imageId}`,
         { method: 'DELETE' }
       );
 
       if (response.ok) {
         message.success('Xóa ảnh thành công!');
         fetchImages(selectedLoaiPhong.id);
+      } else {
+        throw new Error('Không thể xóa ảnh!');
       }
     } catch (error) {
       message.error('Không thể xóa ảnh!');
+      console.error('Delete error:', error);
     }
   };
 
@@ -322,6 +323,7 @@ function LoaiPhong() {
           <Button
             type="primary"
             size="small"
+            icon={<FileImageOutlined/>}
             onClick={() => {
               setSelectedLoaiPhong(record);
               setIsImageModalVisible(true);
