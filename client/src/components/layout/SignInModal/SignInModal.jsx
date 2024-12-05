@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import ForgotPasswordModal from '../ForgotPasswordModal/ForgotPasswordModal';
 import axios from 'axios';
+import { message } from 'antd';
+import { useNavigate } from 'react-router';
 
 const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
+
 
     const openForgotPassword = () => {
       setShowForgotPassword(true);
@@ -26,6 +30,11 @@ const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
               email,
               password
           });
+
+          if (response.data.quyen !== "USER") {
+            setError("Email hoặc mật khẩu không đúng");
+            return;
+          }
           
           // Lưu thông tin người dùng vào localStorage
           localStorage.setItem('user', JSON.stringify(response.data));
@@ -38,6 +47,7 @@ const SignInModal = ({ isOpen, onClose, onSwitchToSignUp }) => {
           console.error('Login error:', error);
       }
     };
+
   
     if (!isOpen) return null;
   

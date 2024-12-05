@@ -5,12 +5,14 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonIcon from '@mui/icons-material/Person';
 import HistoryIcon from '@mui/icons-material/History';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { useNavigate } from 'react-router';
 
 const BookingHeader = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [user, setUser] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Kiểm tra người dùng đã đăng nhập
@@ -62,7 +64,7 @@ const BookingHeader = () => {
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <div onClick={() => {navigate("/")}} className="flex items-center space-x-2">
               <span className="text-2xl font-semibold text-gray-900 cursor-pointer">
                 Hotel Aiko
               </span>

@@ -7,6 +7,7 @@ import Header from './components/layout/Header/Header'
 import Offer from './components/layout/Offer/Offer'
 import Rooms from './components/layout/Rooms/Rooms'
 import Booking from './components/pages/Booking/Booking'
+import BookingConfirm from './components/pages/BookingConfirm/BookingConfirm'
 import './App.css'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <>
         <Routes>
           <Route path='/booking' element={<Booking />} />
+          <Route path='/booking-confirm' element={<BookingConfirm />} />
           <Route path='*' element={
             <>
               <Header />
