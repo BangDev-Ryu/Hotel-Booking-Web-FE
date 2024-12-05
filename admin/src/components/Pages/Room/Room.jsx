@@ -25,6 +25,8 @@ function Room() {
   const [searchText, setSearchText] = useState('');
   const [selectedKhu, setSelectedKhu] = useState({});
   const [selectedLoaiPhong, setSelectedLoaiPhong] = useState({});
+  const [filteredRooms, setFilteredRooms] = useState([]);
+  const [filters, setFilters] = useState({});
 
   // Thêm useEffect để fetch dữ liệu khi component mount
   useEffect(() => {
@@ -32,6 +34,40 @@ function Room() {
     fetchKhus();
     fetchLoaiPhongs();
   }, []);
+
+  // Thêm useEffect để xử lý lọc dữ liệu khi rooms hoặc filters thay đổi
+  useEffect(() => {
+    let result = [...rooms];
+    
+    if (filters.khu) {
+      result = result.filter(room => room.khu.id === filters.khu);
+    }
+    
+    if (filters.dienTich) {
+      result = result.filter(room => {
+        if (filters.dienTich === '20') return room.dienTich < 20;
+        if (filters.dienTich === '20-30') return room.dienTich >= 20 && room.dienTich <= 30;
+        if (filters.dienTich === '30') return room.dienTich > 30;
+        return true;
+      });
+    }
+    
+    if (filters.loaiPhong) {
+      result = result.filter(room => room.loaiPhong.id === filters.loaiPhong);
+    }
+    
+    if (filters.status) {
+      result = result.filter(room => room.status === filters.status);
+    }
+    
+    if (searchText) {
+      result = result.filter(room => 
+        room.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+    
+    setFilteredRooms(result);
+  }, [rooms, filters, searchText]);
 
   // Hàm fetch
   const fetchRooms = async () => {
@@ -151,36 +187,50 @@ function Room() {
       title: 'Khu',
       dataIndex: 'khu',
       key: 'khu',
-      render: (khu) => `${khu.name}`
+      render: (khu) => `${khu.name}`,
+      filters: khus.map(khu => ({
+        text: khu.name,
+        value: khu.id,
+      }))
     },
     {
       title: 'Tên phòng',
       dataIndex: 'name',
       key: 'name',
-      render: (name) => `${name}`,
-      filteredValue: [searchText],
-      onFilter: (value, record) => {
-        return String(record.soPhong).toLowerCase().includes(value.toLowerCase()) ||
-               String(record.roomType).toLowerCase().includes(value.toLowerCase()) ||
-               String(record.status).toLowerCase().includes(value.toLowerCase())
-      }
+      render: (name) => `${name}`
     },
     {
       title: 'Diện tích',
       dataIndex: 'dienTich',
       key: 'dienTich',
-      render: (dienTich) => `${dienTich} m²`
+      render: (dienTich) => `${dienTich} m²`,
+      sorter: (a, b) => a.dienTich - b.dienTich,
+      filters: [
+        { text: '< 20m²', value: '20' },
+        { text: '20m² - 30m²', value: '20-30' },
+        { text: '> 30m²', value: '30' },
+      ]
     },
     {
       title: 'Loại phòng',
       dataIndex: 'loaiPhong',
       key: 'loaiPhong',
-      render: (loaiPhong) => `${loaiPhong.name}`
+      render: (loaiPhong) => `${loaiPhong.name}`,
+      filters: loaiPhongs.map(lp => ({
+        text: lp.name,
+        value: lp.id,
+      }))
     },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
+      filters: [
+        { text: 'Trống', value: 'Trống' },
+        { text: 'Đang sử dụng', value: 'Đang sử dụng' },
+        { text: 'Đã đặt', value: 'Đã đặt' },
+        { text: 'Bảo trì', value: 'Bảo trì' },
+      ]
     },
     {
       title: 'Thao tác',
@@ -209,6 +259,17 @@ function Room() {
     },
   ];
 
+  // Cột cho bảng
+  const handleTableChange = (pagination, filters, sorter) => {
+    const newFilters = {
+      khu: filters.khu?.[0],
+      dienTich: filters.dienTich?.[0],
+      loaiPhong: filters.loaiPhong?.[0],
+      status: filters.status?.[0]
+    };
+    setFilters(newFilters);
+  };
+
   return (
     <div className="room-management">
       <div className="room-header">
@@ -234,7 +295,12 @@ function Room() {
         </div>
       </div>
 
-      <Table columns={columns} dataSource={rooms} rowKey="id" />
+      <Table 
+        columns={columns} 
+        dataSource={filteredRooms.length > 0 ? filteredRooms : rooms} 
+        rowKey="id" 
+        onChange={handleTableChange}
+      />
 
       <Modal
         title={editingRoom ? "Sửa thông tin phòng" : "Thêm phòng mới"}

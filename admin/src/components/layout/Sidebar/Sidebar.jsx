@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../../../App.css"
 import "./SideBar.css"
 import BedIcon from '@mui/icons-material/Bed';
@@ -14,8 +14,11 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 
 const SidebarData = [
     {
@@ -54,6 +57,13 @@ function Sidebar() {
     const [openMenus, setOpenMenus] = useState({});
     const [selectedSubItem, setSelectedSubItem] = useState(null);
     const navigate = useNavigate();
+    const [user, setUser] = useState(null);
+    const [showUserMenu, setShowUserMenu] = useState(false);
+
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('user'));
+        setUser(userData);
+    }, []);
 
     const handleMainMenuClick = (index) => {
         setOpenMenus(prev => ({
@@ -69,7 +79,8 @@ function Sidebar() {
     };
 
     const handleLogout = () => {
-        console.log("Logout clicked");
+        localStorage.removeItem('user');
+        navigate('/login');
     };
 
     return (
@@ -112,15 +123,31 @@ function Sidebar() {
                 </nav>
             </div>
 
-            <button
-                className="logout-btn main-menu-btn"
-                onClick={handleLogout}
-            >
-                <div className="d-flex align-items-center">
-                    <span className="icon"><LogoutIcon /></span>
-                    <span className="title">Đăng xuất</span>
+            <div className="user-profile-section">
+                <button
+                    className="user-profile-btn main-menu-btn"
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                >
+                    <div className="d-flex align-items-center justify-content-between w-100">
+                        <div className="d-flex align-items-center">
+                            <span className="icon"><AccountCircleIcon /></span>
+                            <span className="title">{user?.username || 'User'}</span>
+                        </div>
+                        {showUserMenu ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                    </div>
+                </button>
+                
+                <div className={`user-dropdown ${showUserMenu ? 'show' : ''}`}>
+                    <button className="dropdown-item" onClick={() => navigate('/profile')}>
+                        <PersonOutlineIcon />
+                        <span>Thông tin cá nhân</span>
+                    </button>
+                    <button className="dropdown-item" onClick={handleLogout}>
+                        <LogoutIcon />
+                        <span>Đăng xuất</span>
+                    </button>
                 </div>
-            </button>
+            </div>
         </div>
     );
 }

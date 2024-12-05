@@ -23,6 +23,89 @@ const Account = () => {
     const [editingAccount, setEditingAccount] = useState(null);
     const [searchText, setSearchText] = useState('');
 
+    useEffect(() => {
+      fetchAccounts();
+    }, [])
+
+    const fetchAccounts = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/account')
+        const data = await response.json();
+        setAccounts(data);
+      } catch (error) {
+        message.error('Không thể tải danh sách tài khoản!');
+      }
+    }
+
+    const handleSubmit = async (values) => {
+      try {
+          if (!values.email || !values.username || !values.password || !values.quyen || !values.sdt) {
+              message.error('Vui lòng điền đầy đủ thông tin!');
+              return;
+          }
+          if (editingAccount) {
+              const response = await fetch(`http://localhost:8080/account/${editingAccount.id}`, {
+                  method: 'PUT',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    values
+                  })
+              });
+              if (response.ok) {
+                  message.success('Cập nhật tài khoản thành công!');
+                  fetchAccounts();
+              } else {
+                  message.error('Cập nhật tài khoản thất bại!');
+              }
+          } else {
+              const response = await fetch('http://localhost:8080/account', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    values
+                  })
+              });
+              if (response.ok) {
+                  message.success('Thêm tài khoản mới thành công!');
+                  console.log(values);
+                  fetchAccounts();
+              } else {
+                  console.log(values)
+                  message.error('Thêm tài khoản mới thất bại!');
+              }
+          }
+          setIsModalVisible(false);
+          form.resetFields();
+          setEditingAccount(null);
+      } catch (error) {
+          message.error('Có lỗi xảy ra!');
+      }
+    };
+
+    const handleEdit = (account) => {
+      setEditingAccount(account);
+      form.setFieldsValue(account);
+      
+      setIsModalVisible(true);
+    };
+  
+    const handleDelete = async (id) => {
+      try {
+        const response = await fetch(`http://localhost:8080/account/${id}`, {
+          method: 'DELETE'
+        });
+        if (response.ok) {
+          message.success('Xóa tài khoản thành công!');
+          fetchAccounts();
+        }
+      } catch (error) {
+        message.error('Không thể xóa tài khoản!');
+      }
+    };
 
     const columns = [
         {
@@ -64,13 +147,13 @@ const Account = () => {
               <Button 
                 type="primary" 
                 icon={<EditOutlined />}
-                // onClick={() => handleEdit(record)}
+                onClick={() => handleEdit(record)}
               >
                 Sửa
               </Button>
               <Popconfirm
                 title="Bạn có chắc chắn muốn xóa tài khoản này?"
-                // onConfirm={() => handleDelete(record.id)}
+                onConfirm={() => handleDelete(record.id)}
                 okText="Có"
                 cancelText="Không"
               >
@@ -123,7 +206,7 @@ const Account = () => {
             <Form
             form={form}
             layout="vertical"
-            // onFinish={handleSubmit}
+            onFinish={handleSubmit}
             >
 
             <Form.Item
