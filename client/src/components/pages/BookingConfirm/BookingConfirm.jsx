@@ -15,7 +15,6 @@ const BookingConfirm = () => {
     lastName: '', 
     email: '',
     phone: '',
-    country: 'Việt Nam'
   });
 
   useEffect(() => {
@@ -59,7 +58,6 @@ const BookingConfirm = () => {
         username: userInfo.username || '',
         email: userInfo.email || '',
         phone: userInfo.sdt || '',
-        country: 'Việt Nam'
       });
     }
   }, [userInfo]);
@@ -73,11 +71,17 @@ const BookingConfirm = () => {
   };
 
   const calculateTotalPrice = () => {
-    const numberOfDays = differenceInDays(dateRange[0].endDate, dateRange[0].startDate) || 1;
+    const numberOfDays = differenceInDays(dateRange[0].endDate, dateRange[0].startDate) + 1 || 1;
     return selectedRooms.reduce((total, room) => {
       return total + (room.price * room.quantity * numberOfDays);
     }, 0);
   };
+
+  const calculateTotalRoom = () => {
+    return selectedRooms.reduce((total, room) => {
+      return total + (room.quantity);
+    }, 0);
+  }
 
   const handleConfirmBooking = async () => {
     if (!userInfo) {
@@ -86,21 +90,20 @@ const BookingConfirm = () => {
     }
 
     try {
+      // 1. Tạo booking trước
       const bookingData = {
-        accountId: userInfo.id,
-        rooms: selectedRooms.map(room => ({
-          loaiPhongId: room.id,
-          soLuong: room.quantity
-        })),
-        checkIn: dateRange[0].startDate,
-        checkOut: dateRange[0].endDate,
-        soNguoiLon: guestInfo.adult,
-        soTreEm: guestInfo.children,
-        tongTien: calculateTotalPrice()
+        id_account: userInfo.id,
+        checkInDate: dateRange[0].startDate,
+        checkOutDate: dateRange[0].endDate,
+        adult: guestInfo.adult,
+        children: guestInfo.children,
+        totalRoom: calculateTotalRoom(),
+        totalPrice: calculateTotalPrice(),
+        status: "Pending",
+        payment: "Pending"
       };
 
-      // API đặt phòng sẽ được thêm sau
-      const response = await fetch('http://localhost:8080/dat-phong', {
+      const bookingResponse = await fetch('http://localhost:8080/booking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,12 +111,35 @@ const BookingConfirm = () => {
         body: JSON.stringify(bookingData)
       });
 
-      if (response.ok) {
-        message.success('Đặt phòng thành công!');
-        navigate('/booking-history');
-      } else {
+      if (!bookingResponse.ok) {
         throw new Error('Đặt phòng thất bại');
       }
+
+      // 2. Lấy booking vừa t�o
+      const newBooking = await bookingResponse.json();
+
+      // 3. Chuẩn bị dữ liệu chi tiết booking
+      const bookingRooms = selectedRooms.map(room => ({
+        loaiPhongId: room.id,
+        soLuong: room.quantity
+      }));
+
+      // 4. Thêm chi tiết booking
+      const ctBookingResponse = await fetch(`http://localhost:8080/booking/${newBooking.id_booking}/loai-phong`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingRooms)
+      });
+
+      if (!ctBookingResponse.ok) {
+        throw new Error('Không thể thêm chi tiết phòng');
+      }
+
+      message.success('Đặt phòng thành công!');
+      navigate('/booking-history');
+      
     } catch (error) {
       console.error('Error creating booking:', error);
       message.error('Có lỗi xảy ra khi đặt phòng');
@@ -139,7 +165,7 @@ const BookingConfirm = () => {
           </div>
           <div className="col-span-2">
             <p><strong>Tổng thời gian lưu trú:</strong></p>
-            <p>{differenceInDays(dateRange[0].endDate, dateRange[0].startDate)} đêm</p>
+            <p>{differenceInDays(dateRange[0].endDate, dateRange[0].startDate) + 1} đêm</p>
           </div>
         </div>
       </div>
@@ -170,20 +196,7 @@ const BookingConfirm = () => {
               onChange={handleInputChange}
               className="w-full border p-2 rounded"
             />
-            <p className="text-sm text-gray-500 mt-1">Email xác nhận đặt phòng sẽ được gửi đến địa chỉ này</p>
           </div>
-
-          {/* <div className="col-span-2">
-            <label className="block mb-2">Vùng/quốc gia <span className="text-red-500">*</span></label>
-            <select 
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
-              className="w-full border p-2 rounded"
-            >
-              <option value="Việt Nam">Việt Nam</option>
-            </select>
-          </div> */}
 
           <div className="col-span-2">
             <label className="block mb-2">Số điện thoại <span className="text-red-500">*</span></label>
@@ -197,6 +210,7 @@ const BookingConfirm = () => {
                 className="flex-1 border p-2 rounded"
               />
             </div>
+            <p className="text-sm text-gray-500 mt-1">Số điện thoại sẽ được dùng để xác nhận đặt phòng</p>
           </div>
         </div>
       </div>
@@ -208,10 +222,10 @@ const BookingConfirm = () => {
             <div>
               <p>{room.name} x {room.quantity}</p>
               <p className="text-sm text-gray-500">
-                {differenceInDays(dateRange[0].endDate, dateRange[0].startDate)} đêm x {room.price.toLocaleString('vi-VN')}đ
+                {differenceInDays(dateRange[0].endDate, dateRange[0].startDate) + 1} đêm x {room.price.toLocaleString('vi-VN')}đ
               </p>
             </div>
-            <span>{(room.price * room.quantity * differenceInDays(dateRange[0].endDate, dateRange[0].startDate)).toLocaleString('vi-VN')}đ</span>
+            <span>{(room.price * room.quantity * (differenceInDays(dateRange[0].endDate, dateRange[0].startDate) + 1)).toLocaleString('vi-VN')}đ</span>
           </div>
         ))}
         <div className="border-t mt-4 pt-4">
