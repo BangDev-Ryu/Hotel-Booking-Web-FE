@@ -8,6 +8,7 @@ import NoiThat from './components/pages/NoiThat/NoiThat';
 import LoaiPhong from './components/pages/LoaiPhong/LoaiPhong';
 import Account from './components/pages/Account/Account';
 import Login from './components/pages/Login/Login';
+import Booking from './components/pages/Booking/Booking';
 
 // Tạo PrivateRoute component để bảo vệ các route
 const PrivateRoute = ({ children }) => {
@@ -35,6 +36,7 @@ function App() {
                                     <Route path="/tien-nghi" element={<TienNghi />} />
                                     <Route path="/noi-that" element={<NoiThat />} />
                                     <Route path="/account" element={<Account />} />
+                                    <Route path="/booking" element={<Booking />} />
                                 </Routes>
                             </div>
                         </div>

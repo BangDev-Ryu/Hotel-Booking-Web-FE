@@ -9,12 +9,10 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import WeekendIcon from '@mui/icons-material/Weekend';
 import SecurityIcon from '@mui/icons-material/Security';
-import SettingsIcon from '@mui/icons-material/Settings';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -38,7 +36,6 @@ const SidebarData = [
         subItems: [
             { title: "Tài khoản", icon: <PersonIcon/>, link: "/account" },
             { title: "Quyền", icon: <SecurityIcon/>, link: "/quyen" },
-            { title: "Chức năng", icon: <SettingsIcon/>, link: "/chuc-nang" }
         ]
     },
     {
