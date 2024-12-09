@@ -100,7 +100,7 @@ const BookingConfirm = () => {
         totalRoom: calculateTotalRoom(),
         totalPrice: calculateTotalPrice(),
         status: "Pending",
-        payment: "Pending"
+        payment: "Chưa thanh toán"
       };
 
       const bookingResponse = await fetch('http://localhost:8080/booking', {
