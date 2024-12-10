@@ -1,0 +1,82 @@
+.dichvu-management {
+  padding: 24px;
+}
+
+.dichvu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dichvu-header h1 {
+  margin: 0;
+}
+
+.dichvu-actions {
+  display: flex;
+  align-items: center;
+}
+
+.ant-table {
+  background: white;
+  border-radius: 8px;
+}
+
+.ant-modal-content {
+  border-radius: 8px;
+}
+
+.ant-table-cell .ant-space {
+  display: flex;
+  justify-content: center;
+}
+
+.ant-table-cell .ant-btn {
+  min-width: 32px;
+  padding: 2.4px 8px;
+}
+
+.ant-btn:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+.ant-btn-link {
+  padding: 4px 8px;
+  height: auto;
+  transition: all 0.3s;
+}
+
+.ant-btn-link:hover {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+}
+
+.ant-btn-link.ant-btn-dangerous:hover {
+  background: rgba(255, 77, 79, 0.1);
+}
+
+.ant-popconfirm-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.ant-popover-content {
+  border-radius: 8px;
+}
+
+.ant-popover-inner {
+  border-radius: 8px;
+}
+
+.ant-popover-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.ant-popover-message-title {
+  font-weight: 500;
+}

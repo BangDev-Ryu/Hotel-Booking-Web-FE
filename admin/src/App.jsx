@@ -9,7 +9,7 @@ import LoaiPhong from './components/pages/LoaiPhong/LoaiPhong';
 import Account from './components/pages/Account/Account';
 import Login from './components/pages/Login/Login';
 import Booking from './components/pages/Booking/Booking';
-
+import DichVu from './components/pages/DichVu/DichVu';
 // Tạo PrivateRoute component để bảo vệ các route
 const PrivateRoute = ({ children }) => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -30,13 +30,14 @@ function App() {
                             <Sidebar />
                             <div className="content">
                                 <Routes>
-                                    <Route path="/room" element={<Room />} />
+                                <Route path="/room" element={<Room />} />
                                     <Route path="/loai-phong" element={<LoaiPhong />} />
                                     <Route path="/khu" element={<Khu />} />
                                     <Route path="/tien-nghi" element={<TienNghi />} />
                                     <Route path="/noi-that" element={<NoiThat />} />
                                     <Route path="/account" element={<Account />} />
                                     <Route path="/booking" element={<Booking />} />
+                                    <Route path="/dich-vu" element={<DichVu />} />
                                 </Routes>
                             </div>
                         </div>

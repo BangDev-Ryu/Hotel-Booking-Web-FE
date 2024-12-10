@@ -22,14 +22,16 @@ const Booking = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
-  const [bookingDetails, setBookingDetails] = useState([]);
+  const [bookingDetails, setBookingDetails] = useState({
+    roomTypes: [], // Chi tiết loại phòng
+    rooms: []      // Chi tiết phòng cụ thể
+  });
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [editForm] = Form.useForm();
   const [availableRooms, setAvailableRooms] = useState([]);
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [filteredBookings, setFilteredBookings] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchBookings();
@@ -45,7 +47,6 @@ const Booking = () => {
   }, [searchText, bookings, accounts]);
 
   const fetchBookings = async () => {
-    setLoading(true);
     try {
       // Lấy danh sách booking
       const bookingResponse = await fetch('http://localhost:8080/booking');
@@ -70,22 +71,33 @@ const Booking = () => {
 
       setBookings(bookingsData);
       setAccounts(accountsMap);
-      setFilteredBookings(bookingsData); // C���p nhật luôn filtered bookings
+      setFilteredBookings(bookingsData); // Cập nhật luôn filtered bookings
 
     } catch (error) {
       console.error('Error fetching bookings:', error);
       message.error('Không thể tải danh sách booking!');
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   const fetchBookingDetails = async (bookingId) => {
     try {
-      const response = await fetch(`http://localhost:8080/booking/${bookingId}/loai-phong`);
-      const data = await response.json();
-      setBookingDetails(data);
+      // Gọi đồng thời cả 2 API
+      const [roomTypesResponse, roomsResponse] = await Promise.all([
+        fetch(`http://localhost:8080/booking/${bookingId}/loai-phong`),
+        fetch(`http://localhost:8080/booking/${bookingId}/room`)
+      ]);
+
+      const [roomTypesData, roomsData] = await Promise.all([
+        roomTypesResponse.json(),
+        roomsResponse.json()
+      ]);
+
+      setBookingDetails({
+        roomTypes: roomTypesData,
+        rooms: roomsData
+      });
     } catch (error) {
+      console.error('Error fetching booking details:', error);
       message.error('Không thể tải chi tiết booking!');
     }
   };
@@ -294,14 +306,7 @@ const Booking = () => {
             onChange={(e) => setSearchText(e.target.value)}
             style={{ width: 300, marginRight: 16 }}
           />
-          <Button 
-            type="primary" 
-            icon={<ReloadOutlined />} 
-            onClick={() => fetchBookings()}
-            loading={loading}
-          >
-            Làm mới
-          </Button>
+          
         </div>
       </div>
 
@@ -309,7 +314,6 @@ const Booking = () => {
         columns={columns} 
         dataSource={filteredBookings} 
         rowKey="id_booking" 
-        loading={loading}
       />
 
       {/* Modal xem chi tiết booking */}
@@ -328,9 +332,10 @@ const Booking = () => {
             <p>Tổng số phòng: {selectedBooking.totalRoom}</p>
             <p>Phương thức thanh toán: {selectedBooking.payment}</p>
             <p>Tiền cọc: {selectedBooking.deposit?.toLocaleString('vi-VN')} VNĐ</p>
-            <h3>Chi tiết phòng đặt:</h3>
+            
+            <h3>Chi tiết loại phòng đặt:</h3>
             <Table
-              dataSource={bookingDetails}
+              dataSource={bookingDetails.roomTypes}
               columns={[
                 {
                   title: 'Loại phòng',
@@ -341,13 +346,35 @@ const Booking = () => {
                   title: 'Số lượng',
                   dataIndex: 'roomQuantity',
                   key: 'roomQuantity',
-                  render: (roomQuantity) => roomQuantity
                 },
                 {
                   title: 'Giá',
                   dataIndex: 'price',
                   key: 'price',
                   render: (price) => `${price?.toLocaleString('vi-VN')} VNĐ`,
+                },
+              ]}
+              pagination={false}
+            />
+
+            <h3>Danh sách phòng cụ thể:</h3>
+            <Table
+              dataSource={bookingDetails.rooms}
+              columns={[
+                {
+                  title: 'Khu',
+                  dataIndex: ['khu', 'name'],
+                  key: 'khuName',
+                },
+                {
+                  title: 'Tên phòng',
+                  dataIndex: 'name',
+                  key: 'name',
+                },
+                {
+                  title: 'Loại phòng',
+                  dataIndex: ['loaiPhong', 'name'],
+                  key: 'loaiPhongName',
                 },
               ]}
               pagination={false}

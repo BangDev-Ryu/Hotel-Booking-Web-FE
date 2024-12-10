@@ -110,15 +110,19 @@ function Room() {
         }
         if (editingRoom) {
             // Cập nhật phòng
+            console.log(values);
             const response = await fetch(`http://localhost:8080/room/${editingRoom.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                  ...values,
-                  khu: {id: values.khu},
-                  loaiPhong: {id: values.loaiPhong}
+                    id: editingRoom.id,
+                    name: values.name,
+                    dienTich: values.dienTich,
+                    status: values.status,
+                    khu: { id: values.khu },
+                    loaiPhong: { id: values.loaiPhong }
                 })
             });
             if (response.ok) {
@@ -160,9 +164,13 @@ function Room() {
   // Xử lý sửa phòng
   const handleEdit = (room) => {
     setEditingRoom(room);
-    form.setFieldsValue(room);
-    form.setFieldValue("khu", room.khu.name);
-    form.setFieldValue("loaiPhong", room.loaiPhong.name);
+    form.setFieldsValue({
+        name: room.name,
+        dienTich: room.dienTich,
+        status: room.status,
+        khu: room.khu.id,
+        loaiPhong: room.loaiPhong.id
+    });
     setIsModalVisible(true);
   };
 
