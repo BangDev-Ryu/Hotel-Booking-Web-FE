@@ -11,6 +11,7 @@ import Login from './components/pages/Login/Login';
 import Booking from './components/pages/Booking/Booking';
 import DichVu from './components/pages/DichVu/DichVu';
 import HoaDon from './components/pages/HoaDon/HoaDon';
+import Quyen from './components/pages/Quyen/Quyen';
 
 // Tạo PrivateRoute component để bảo vệ các route
 const PrivateRoute = ({ children }) => {
@@ -41,6 +42,7 @@ function App() {
                                     <Route path="/booking" element={<Booking />} />
                                     <Route path="/dich-vu" element={<DichVu />} />
                                     <Route path="/hoa-don" element={<HoaDon />} />
+                                    <Route path="/quyen" element={<Quyen />} />
                                 </Routes>
                             </div>
                         </div>
