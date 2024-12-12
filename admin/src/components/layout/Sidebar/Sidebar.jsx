@@ -17,6 +17,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from 'react-router-dom';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import BarChartIcon from '@mui/icons-material/BarChart';
 
 const SidebarData = [
     {
@@ -46,6 +47,11 @@ const SidebarData = [
             { title: "Hóa đơn", icon: <ReceiptIcon/>, link: "/hoa-don" },
             { title: "Dịch vụ", icon: <RoomServiceIcon/>, link: "/dich-vu" }
         ]
+    },
+    {
+        title: "Thống kê",
+        icon: <BarChartIcon/>,
+        link: "/thong-ke"
     },
 ];
 
@@ -90,31 +96,47 @@ function Sidebar() {
                 <nav className="nav flex-column">
                     {SidebarData.map((item, index) => (
                         <div key={index} className="menu-item">
-                            <button
-                                className={`main-menu-btn ${selectedIndex === index ? 'active' : ''}`}
-                                onClick={() => handleMainMenuClick(index)}
-                            >
-                                <div className="d-flex align-items-center justify-content-between w-100">
+                            {item.subItems ? (
+                                // Menu có submenu
+                                <>
+                                    <button
+                                        className={`main-menu-btn ${selectedIndex === index ? 'active' : ''}`}
+                                        onClick={() => handleMainMenuClick(index)}
+                                    >
+                                        <div className="d-flex align-items-center justify-content-between w-100">
+                                            <div className="d-flex align-items-center">
+                                                <span className="icon">{item.icon}</span>
+                                                <span className="title">{item.title}</span>
+                                            </div>
+                                            {openMenus[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                        </div>
+                                    </button>
+                                    
+                                    <div className={`sub-menu ${openMenus[index] ? 'show' : ''}`}>
+                                        {item.subItems.map((subItem, subIndex) => (
+                                            <button
+                                                key={subIndex}
+                                                className={`sub-menu-btn ${selectedIndex === index && selectedSubItem === subIndex ? 'active' : ''}`}
+                                                onClick={() => handleSubItemClick(subItem.link, index, subIndex)}
+                                            >
+                                                <span className="icon">{subItem.icon}</span>
+                                                <span className="title">{subItem.title}</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            ) : (
+                                // Menu không có submenu
+                                <button
+                                    className={`main-menu-btn ${selectedIndex === index ? 'active' : ''}`}
+                                    onClick={() => handleSubItemClick(item.link, index)}
+                                >
                                     <div className="d-flex align-items-center">
                                         <span className="icon">{item.icon}</span>
                                         <span className="title">{item.title}</span>
                                     </div>
-                                    {openMenus[index] ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                                </div>
-                            </button>
-                            
-                            <div className={`sub-menu ${openMenus[index] ? 'show' : ''}`}>
-                                {item.subItems.map((subItem, subIndex) => (
-                                    <button
-                                        key={subIndex}
-                                        className={`sub-menu-btn ${selectedIndex === index && selectedSubItem === subIndex ? 'active' : ''}`}
-                                        onClick={() => handleSubItemClick(subItem.link, index, subIndex)}
-                                    >
-                                        <span className="icon">{subItem.icon}</span>
-                                        <span className="title">{subItem.title}</span>
-                                    </button>
-                                ))}
-                            </div>
+                                </button>
+                            )}
                         </div>
                     ))}
                 </nav>

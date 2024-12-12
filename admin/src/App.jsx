@@ -12,7 +12,7 @@ import Booking from './components/pages/Booking/Booking';
 import DichVu from './components/pages/DichVu/DichVu';
 import HoaDon from './components/pages/HoaDon/HoaDon';
 import Quyen from './components/pages/Quyen/Quyen';
-
+import ThongKe from './components/pages/ThongKe/ThongKe';
 // Tạo PrivateRoute component để bảo vệ các route
 const PrivateRoute = ({ children }) => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -43,6 +43,7 @@ function App() {
                                     <Route path="/dich-vu" element={<DichVu />} />
                                     <Route path="/hoa-don" element={<HoaDon />} />
                                     <Route path="/quyen" element={<Quyen />} />
+                                    <Route path="/thong-ke" element={<ThongKe />} />
                                 </Routes>
                             </div>
                         </div>
